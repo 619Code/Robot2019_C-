@@ -8,6 +8,8 @@
 #include "Robot.h"
 #include "RobotMap.hpp"
 #include "rev/CANSparkMax.h"
+#include <pathfinder.h>
+#include <Drive.h>
 
 #include <iostream>
 #include <vector>
@@ -20,35 +22,13 @@
 using namespace frc;
 using namespace rev;
 
-CANSparkMax leftMotorFront{RobotMap::Get().LEFT_FRONT, CANSparkMax::MotorType::kBrushless};
-CANSparkMax leftMotorMiddle{RobotMap::Get().LEFT_MIDDLE, CANSparkMax::MotorType::kBrushless};
-CANSparkMax leftMotorRear{RobotMap::Get().LEFT_REAR, CANSparkMax::MotorType::kBrushless};
-
-CANSparkMax rightMotorFront{RobotMap::Get().RIGHT_FRONT, CANSparkMax::MotorType::kBrushless};
-CANSparkMax rightMotorMiddle{RobotMap::Get().RIGHT_MIDDLE, CANSparkMax::MotorType::kBrushless};
-CANSparkMax rightMotorRear{RobotMap::Get().RIGHT_REAR, CANSparkMax::MotorType::kBrushless};
-
-DifferentialDrive robotDrive{leftMotorMiddle, rightMotorMiddle};
-
 Joystick jstick{0};
 
-void initSparkMax()
-{
-  leftMotorMiddle.SetRampRate(RobotMap::Get().RAMP_RATE);
-  leftMotorMiddle.SetIdleMode(CANSparkMax::IdleMode::kBrake);
-  leftMotorRear.Follow(leftMotorMiddle);
-  leftMotorFront.Follow(leftMotorMiddle);
-
-  rightMotorMiddle.SetRampRate(RobotMap::Get().RAMP_RATE);
-  rightMotorMiddle.SetIdleMode(CANSparkMax::IdleMode::kBrake);
-  rightMotorRear.Follow(rightMotorMiddle);
-  rightMotorFront.Follow(rightMotorMiddle);
-}
+Drive drive;
 
 void Robot::RobotInit() 
 {
-  initSparkMax();
-  robotDrive.SetMaxOutput(0.7);
+   
 }
 
 /**
@@ -87,14 +67,19 @@ void Robot::AutonomousPeriodic()
 
 void Robot::TeleopInit() {}
 
-double deadzone(double deadzone)
+double getSpeedAxis()
 {
-  return std::abs(deadzone) > 0.07 ? std::abs(deadzone)*deadzone : 0; 
+  return jstick.GetRawAxis(RobotMap::Get().SPEED_AXIS);
+}
+
+double getRotAxis()
+{
+  return jstick.GetRawAxis(RobotMap::Get().ROT_AXIS);
 }
 
 void Robot::TeleopPeriodic() 
 {
-  robotDrive.CurvatureDrive(deadzone(jstick.GetRawAxis(1)), -deadzone(jstick.GetRawAxis(4)*0.5), true);
+  drive.defaultDrive(getSpeedAxis(), getRotAxis());
 }
 
 void Robot::TestPeriodic() {}

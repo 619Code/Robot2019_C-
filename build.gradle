@@ -84,4 +84,21 @@ model {
             wpi.deps.vendor.cpp(it)
         }
     }
+    pathfinder(NativeLibrarySpec) {
+            binaries.all {
+                cCompiler.args << '-fPIC'
+            }
+
+            sources {
+                c {
+                    source {
+                        srcDirs = ['src']
+                        includes = ['**/*.c']
+                    }
+                    exportedHeaders {
+                        srcDirs = ['include']
+                    }
+                }
+            }
+        }
 }
