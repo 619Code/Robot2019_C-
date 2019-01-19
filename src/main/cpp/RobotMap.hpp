@@ -12,5 +12,13 @@ public:
     const int RIGHT_REAR = 15;
 
     //ramp constant (only works if in coast)
-    const int RAMP_RATE = 0.1;
+    const double RAMP_RATE = 0.3;
+
+    //drive consts
+    const double ROT_MAX = 0.5;
+    const double SPEED_MAX = 1.0;
+
+    //controller consts
+    const int SPEED_AXIS = 1;
+    const int ROT_AXIS = 4;
 };
